@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+   
+    </head>
+
+        
+    <style>
+        :root {
+            --bs-primary: "red";
+        }
+
+        body{
+            margin: 0px;
+            padding:0px
+        }
+
+        .btn-lg{
+            height: 100px;
+            width:100px;
+        }
+
+        .col{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .modal-dialog{
+            overflow-y: initial !important
+        }
+        .modal-body{
+            height: 400px;
+            overflow-y: auto;
+        }
+        
+        #assignment_name_input{
+            width:20vw;
+        }
+        
+        .assignments{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom:17vh;
+            border: 5px solid #0275d8 ;
+            border-radius: 20px;
+            padding:10px 0px 0px 0px;
+        }
+        .row rowform{
+            padding:0px 10px 0px 10px;
+            height: 75px;
+        }
+        
+        .dropdown-menu {
+            min-width: 40px !important;
+            padding: 0px;
+            }
+        .dropdown-menu li a{
+            padding: 5px;
+            color: #0275d8;
+
+        }
+
+        @media screen and (max-width: 500px) {
+            /* Styles for screens with width less than 500px */
+            a{
+                font-size: 4vw !important; /* Change font size to 4vw */
+                
+            }
+            .container-fluid{
+                width:90vw;
+            }
+        }
+        .col{
+            display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+        }
+
+        @media screen and (min-width: 501px) {
+        /* Styles for screens with width greater than 500px */
+        a{
+            font-size: 20px !important; /* Change font size to 2vw */
+        }
+        }
+        .container-fluid{
+            width:60vw;
+            height:70vh;
+            overflow-y: auto;
+        }
+
+        #add_button{
+            height:50px;
+        }
+        
+        
+    </style>
+
+    <body>
+        <div class="container " style="padding:10px">
+
+        
+        <div class="row" style="margin:auto;width:60vw">
+            <div class="col">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle sort_button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" style="height:50px;">
+                      Sort
+                    </button>
+                    <ul class="dropdown-menu" id="sort_menu">
+                        <li><a class="dropdown-item" href="#">Course</a></li>
+                        <li><a class="dropdown-item" href="#">Due Date</a></li>
+                        <li><a class="dropdown-item" href="#">Name</a></li>
+                        <li><a class="dropdown-item" href="#">Tag</a></li>
+                    </ul>
+                  </div>
+            </div>
+            <div class="col">
+
+                <button id="add_button"  type="button" class="btn btn-primary" data-toggle="modal" data-target="#create_assignment_modal">
+                    Add
+                </button>
+
+            </div>
+        </div>
+        </div>
+
+        <!-- Button trigger modal -->
+        
+
+        <div class="container-fluid assignments" id="assignments_list" >
+            
+            
+            <!-- {% if not assignments  %}
+                <h1>You have no assignments added yet=(</h1>
+            {% endif %}
+            
+                {% for i in range(assignments|length) %}
+                    <h3>{{assignments[i].assignmentName}}</h3> 
+                    <h5>{{changeDate(assignments[i].dueDate)}}  {{changeTime(assignments[i].dueTime)}}</h5>
+                
+                    {% if assignments[i].assignmentCourse %}
+                    <h5>{{assignments[i].assignmentCourse}}: {{assignments[i].assignmentType}}</h5>
+                    {% else %}
+                    <h5>{{assignments[i].assignmentType}}</h5>
+                    {% endif %}
+                    <ul>
+                    {% for x in range(assignmentTasks[i]|length) %}
+                        
+                        <li>{{assignmentTasks[i][x].taskName}}</li>
+                    {% endfor %}
+                    </ul>
+                {% endfor %} -->
+                {{ assignmentsHtml|safe }}
+        
+            
+
+        </div>
+
+        <br>
+    
+        <!-- Assignment Modal:To add assignments -->
+        <div class="modal fade" id="create_assignment_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable " >
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add New Assignment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body" style="padding:0px;">
+
+                        <form  action="{{url_for('assignment_creation')}}" method="POST" id="assignment_form">
+                            <div class="row rowform">
+                                <div class="col ">
+                                    Assignment Name:
+                                </div>
+                                <div class="col">
+                                    <input id="assignment_name_input" class="form-control form-control-md" type="text"  name="assignmentName" required>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row rowform">
+                                <div  class="col ">
+                                    Due date:
+                                </div>
+                                <div class="col ">
+                                    <input style="width:100px" id="assignment_date_input"class="form-control form-control-sm" type="date" name="dueDate" required>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row rowform">
+                                <div class="col ">
+                                    Due Time:
+                                </div>
+                                <div class="col ">
+                                    <input style="width:100px" id="assignment_time_input" class="form-control form-control-sm" type="time" name="dueTime" required>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row rowform">
+                                <div class="col ">
+                                    Assignment Tag:
+                                </div>
+                                <div class="col ">
+                                    <select class="form-select" id="assignment_type_input" name="assignmentType"required>
+                                        <option selected>Choose...</option>
+                                        <option value="Coding Assignment">Coding</option>
+                                        <option value="Paper">Paper</option>
+                                        <option value="Problem Set">Problem Set</option>
+                                        <option  value="Reading">Reading</option>
+                                        <option value="Coding Assignment">Revise</option>
+                                        <option value="Coding Assignment">Study</option>
+                                        
+                                        </select>
+                                
+                                </div>
+
+                            </div>
+                            <hr>
+                            <div class="row rowform">
+                                <div class="col ">
+                                    Class:
+                                </div>
+                                <div class="col ">
+                                    <input style="position: absolute;width:10px;" id="course_name_input" class="form-control form-control-sm" type="text" name="courseName">
+                                    <button style="position: absolute" type="button" id="course_name" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#course_modal" > CHOOSE</button>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row rowform">
+                                <div class="col ">
+                                    Tasks
+                                    
+                                </div>
+                                <div class="col ">
+                                    <button id="add-task-input" type="button" class="btn btn-outline-success">Add Task</button>
+                        
+                                    <div id="task_inputs">
+    
+                                    </div>
+                                
+                                </div>
+                            </div>
+                            <hr>
+                                    <div class="row justify-content-md-center">
+                                        <div class="col">
+                                            <div>Start Date</div>
+                                            <input style="width:100px" id="assignment_start_date_input"class="form-control form-control-sm" type="date" name="startDate" required>
+                                
+                                            <button class="btn btn-primary me-md-2" type="button" id="choose_times_button">Choose Times for Assignment</button>
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-md-center">
+                                        <div class="col" id="timesDiv">
+                                            
+                                            
+
+                                        </div>
+                                    </div>
+                                
+
+                            <br>
+                        
+                    
+                    </form>
+                    
+                
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" form="assignment_form" >Save changes</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!-- Course Modal:To select course or add course -->
+        <div class="modal fade" id="course_modal" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable " >
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"> Courses</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <h6>Don't see a course? Add it</h6>
+                    <p>Course Name</p>
+                        <input id="new_course_name_input" class="form-control form-control-md" type="text"  name="courseName" required>
+                        <button type="submit" id="course_add_button"  class="btn btn-primary"  data-dismiss="modal">Add Course</button>
+                    <hr>
+
+                    <div id="courses_list">
+
+                        
+                    </div>
+                        
+                        
+                  </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="assignment_modal" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable " >
+            <div class="modal-content">
+                <div class="modal-header ">
+                <div id="assignment_modal_title" style="width:100%;"> </div>
+                <button style="margin-left:0px;"type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body" >
+                    
+                    <div id="intervals_list"> 
+
+                    </div>
+
+                    <div id="tasks_list">
+
+                    </div>
+                        
+                        
+                  </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        
+        {%include "navbar.html" %}
+
+
+    </body>
+
+    <script   src="https://code.jquery.com/jquery-3.6.4.min.js"   integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="   crossorigin="anonymous"></script>
+
+    <!-- Javascript source -->
+    <script src="../static/javascript/assignments.js"></script>
+    
+    <!-- Bootstrap javascript sourcess -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+</html>

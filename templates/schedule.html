@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    </head>
+
+        
+    <style>
+        .btn-lg{
+            height: 100px;
+            width:100px;
+        }
+
+        body{
+
+            display: flex;
+            min-height: 85vh;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .modal-dialog{
+            overflow-y: initial !important
+        }
+        .modal-body{
+            height: 400px;
+            overflow-y: auto;
+        }
+
+        
+        .calendar{
+            height: calc(100vh - var(--navbar-height, 0px));
+            padding: 0px 20px 20px 20px;
+           
+        }
+
+        .table_rows{
+            padding:0px;
+            margin:0px;
+            text-align:center; 
+            width:14.3%;
+        }
+
+        .calendar_header{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0px;
+            padding: 0px;
+        }
+        
+        .col{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+       
+        .day{
+            cursor: pointer;
+        }
+        #days_table{
+            height: calc(100vh - 200px);
+        }
+        .calendar-day {
+            border: 2px solid black;
+            padding: 0px;
+        }
+        .cal_table{
+            width:100%;
+            font-size:18px; 
+            table-layout:fixed;
+        }
+            
+
+        .day-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        min-height:75px;
+        }
+
+        .day-top {
+            align-items: flex-start;
+        }
+
+        .day-bottom {
+        align-items: flex-end;
+        }
+
+        @media screen and (max-width: 500px) {
+        /* Styles for screens with width less than 500px */
+        a{
+            font-size: 4vw !important; /* Change font size to 4vw */
+        }
+        }
+
+        @media screen and (min-width: 501px) {
+        /* Styles for screens with width greater than 500px */
+        a{
+            font-size: 20px !important; /* Change font size to 2vw */
+        }
+        }
+        .icons{
+            width:50px;
+            height:50px;
+            font-size:25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color:white;
+        }
+
+    </style>
+
+
+    <body>
+        
+        
+        <div class="calendar">
+
+            <div class="btn-group" id="calendar_select" role="group" aria-label="Basic outlined example">
+            <button id="assignments_calendar" type="button" class="btn btn-outline-dark ">Assignments</button>
+            <button id="personal_calendar" type="button" class="btn btn-outline-dark">Personal</button>
+          </div>
+        
+            <div class="calendar_header">
+                <div class="icons rounded-circle bg-primary">
+                    <i class="bi bi-chevron-double-left"  onclick="changeMonth(-1)"></i>   
+                </div>
+                <h1 ><span id="current_month">{{currMonth}}</span> <span id="current_year">{{currYear}}</span></h1>
+                <div class="icons rounded-circle bg-primary">
+                    <i class="bi bi-chevron-double-right" onclick="changeMonth(1)"></i>
+                </div>
+
+            </div>
+            <table class="cal_table">
+                <tr style="padding:0px" class="table_rows">
+                    <th class="table_rows">Sun</th>
+                    <th class="table_rows">Mon</th>
+                    <th class="table_rows">Tue</th>
+                    <th class="table_rows">Wed</th>
+                    <th class="table_rows">Thu</th>
+                    <th class="table_rows">Fri</th>
+                    <th class="table_rows">Sat</th>
+                </tr>
+            </table>
+           
+
+            <div class="calendar_setup" id="cal">
+                
+                {{ calendar|safe }}
+
+            </div>
+        
+        </div>
+        
+        <div class="modal fade" id="schedule_modal" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable " >
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"> 
+                    <span id="modalMonth"></span>
+                    <span id="modalDay"></span>
+                    <span id="modalYear"></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                
+                    <div id="assignments_modal_text">
+
+
+
+                    </div>
+                  </div>
+                <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" form="assignment_form" >Save changes</button>
+                </div> -->
+            </div>
+            </div>
+        </div>
+
+        <!-- Events modal: to add event -->
+        <div class="modal fade" id="event_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable " >
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add New Event to your Calendar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body" style="padding-top:10px;">
+
+                        <form  action="{{url_for('event_creation')}}" method="POST" id="event_form">
+                            <div class="row rowform">
+                                <div class="col-5">
+                                    Event Name:
+                                </div>
+                                <div class="col-7">
+                                    <input style=" width:20vw;" class="form-control form-control-md" type="text"  name="eventName" required>
+                                </div>
+                                
+                            </div>
+                            <hr>
+                            <div class="row rowform">
+                                <div  class="col-5 ">
+                                    Date:
+                                </div>
+                                <div class="col-7 ">
+                                    <input style="width:100px" id="assignment_date_input"class="form-control form-control-sm" type="date" name="eventDate" required>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row rowform">
+                                <div class="col-5 ">
+                                    Start Time:
+                                </div>
+                                <div class="col-7 ">
+                                    <input style="width:100px" id="assignment_time_input" class="form-control form-control-sm" type="time" name="startTime" required>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row rowform">
+                                <div class="col-5">
+                                    End Time:
+                                </div>
+                                <div class="col-7 ">
+                                    <input style="width:100px" id="assignment_time_input" class="form-control form-control-sm" type="time" name="endTime" required>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row rowform">
+                                <div class="col-5 ">
+                                    Repeats
+                                </div>
+                                <div class="col-7 ">
+                                    
+                                    <div class="form-check">
+                                        <input type="checkbox" id="repeat_check" name="repeatCheckbox">
+                                        
+                                    
+                                    </div>
+                                      <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                                      <div id="repeat_form">
+
+                                      </div>
+                                </div>
+                            </div>
+                            
+                            
+                    </form>
+                    
+                
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" form="event_form" >Create Event</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        
+
+        {%include "navbar.html" %}
+
+
+    </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Javascript source -->
+    <script src="../static/javascript/schedule.js"></script>
+
+    
+    <!-- Bootstrap javascript sourcess -->
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+
+</html>

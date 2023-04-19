@@ -1,0 +1,24 @@
+<div class="calendar_setup">
+    <ul class="calendar_weeks">
+        <li>Sun</li>
+        <li>Mon</li>
+        <li>Tue</li>
+        <li>Wed</li>
+        <li>Thu</li>
+        <li>Fri</li>
+        <li>Sat</li>
+    </ul>
+    
+    <ul id="calendar_days">
+        {% for week in monthCalendar %}
+            {% for i in range(7) %}
+                {% if week[i]==0 %}
+                <li> </li>
+                {% else %}
+                    <li id="calendar_days" class="day{{week[i]}}" >{{ week[i]}}</li>
+               {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </ul>
+    
+</div>
